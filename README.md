@@ -19,4 +19,5 @@ receptive field, which tends to either lose or assume "information" from the ima
 5) Cross entropy loss when summed over a huge number of proposals tends to take a huge value for proposals that have a high confidence metric thereby dwarfing the contribution from the proposals of interest. Focal Loss was proposed to do away with this problem
 6) However Focal loss gives much better results with single stage networks. This is because a two stage network has some discriminative policy to deal with this class imbalance something which the single stage networks don't enjoy.
 
+If you find any issue in this repsoritory, feel free to fork this repository and submit a PR with the necessary changes 
 

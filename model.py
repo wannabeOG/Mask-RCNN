@@ -18,7 +18,6 @@ from nms.nms_wrapper import nms
 from roialign.roi_align.crop_and_resize import CropAndResizeFunction
 
 
-
 #  Utility Functions (Inspired from Matterport)
 
 def log(text, array=None):
@@ -825,7 +824,7 @@ def detection_layer(config, rois, mrcnn_class, mrcnn_bbox, image_meta):
     # Currently only supports batchsize 1
     rois = rois.squeeze(0)
 
-    _, _, window, _ = parse_image_meta(image_meta)
+    _, _, window, _ = utils.parse_image_meta(image_meta)
     window = window[0]
     detections = refine_detections(rois, mrcnn_class, mrcnn_bbox, window, config)
 
@@ -986,7 +985,7 @@ class Mask(nn.Module):
         alpha = 0.25
         gamma = 2
 
-        t = one_hot_embedding(y.data.cpu(), 1+self.num_classes) 
+        t = utils.one_hot_embedding(y.data.cpu(), 1+self.num_classes) 
         t = t[:,1:]  
         t = Variable(t).cuda() 
 
@@ -1006,7 +1005,7 @@ class Mask(nn.Module):
         '''
         alpha = 0.25
 
-        t = one_hot_embedding(y.data.cpu(), 1+self.num_classes)
+        t = utils.one_hot_embedding(y.data.cpu(), 1+self.num_classes)
         t = t[:,1:]
         t = Variable(t).cuda()
 
@@ -1184,7 +1183,7 @@ def compute_mrcnn_mask_loss(target_masks, target_class_ids, pred_masks):
 
 def compute_losses(rpn_match, rpn_bbox, rpn_class_logits, rpn_pred_bbox, target_class_ids, mrcnn_class_logits, target_deltas, mrcnn_bbox, target_mask, mrcnn_mask):
 
-    rpn_class_loss = compute_rpn_class_loss(rpn_match, rpn_class_logits)
+    rpn_class_loss = utils.compute_rpn_class_loss(rpn_match, rpn_class_logits)
     rpn_bbox_loss = compute_rpn_bbox_loss(rpn_bbox, rpn_match, rpn_pred_bbox)
     mrcnn_class_loss = compute_mrcnn_class_loss(target_class_ids, mrcnn_class_logits)
     mrcnn_bbox_loss = compute_mrcnn_bbox_loss(target_deltas, target_class_ids, mrcnn_bbox)
@@ -1251,7 +1250,7 @@ def load_image_gt(dataset, config, image_id, augment=False,
         mask = utils.minimize_mask(bbox, mask, config.MINI_MASK_SHAPE)
 
     # Image meta data
-    image_meta = compose_image_meta(image_id, shape, window, active_class_ids)
+    image_meta = utils.compose_image_meta(image_id, shape, window, active_class_ids)
 
     return image, image_meta, class_ids, bbox, mask
 
@@ -1415,7 +1414,7 @@ class Dataset(torch.utils.data.Dataset):
 
         # Add to batch
         rpn_match = rpn_match[:, np.newaxis]
-        images = mold_image(image.astype(np.float32), self.config)
+        images = utils.mold_image(image.astype(np.float32), self.config)
 
         # Convert
         images = torch.from_numpy(images.transpose(2, 0, 1)).float()
@@ -2022,9 +2021,9 @@ class MaskRCNN(nn.Module):
                 min_dim=self.config.IMAGE_MIN_DIM,
                 max_dim=self.config.IMAGE_MAX_DIM,
                 padding=self.config.IMAGE_PADDING)
-            molded_image = mold_image(molded_image, self.config)
+            molded_image = utils.mold_image(molded_image, self.config)
             # Build image_meta
-            image_meta = compose_image_meta(
+            image_meta = utils.compose_image_meta(
                 0, image.shape, window,
                 np.zeros([self.config.NUM_CLASSES], dtype=np.int32))
             # Append
@@ -2097,6 +2096,3 @@ class MaskRCNN(nn.Module):
             if full_masks else np.empty((0,) + masks.shape[1:3])
 
         return boxes, class_ids, scores, full_masks
-
-
-

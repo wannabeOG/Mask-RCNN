@@ -1020,30 +1020,30 @@ class Mask(nn.Module):
     
     
     def compute_rpn_class_loss(rpn_match, rpn_class_logits):
-    """RPN anchor classifier loss.
-    rpn_match: [batch, anchors, 1]. Anchor match type. 1=positive,
-               -1=negative, 0=neutral anchor.
-    rpn_class_logits: [batch, anchors, 2]. RPN classifier logits for FG/BG.
-    """
+        """RPN anchor classifier loss.
+        rpn_match: [batch, anchors, 1]. Anchor match type. 1=positive,
+                   -1=negative, 0=neutral anchor.
+        rpn_class_logits: [batch, anchors, 2]. RPN classifier logits for FG/BG.
+        """
 
-    # Squeeze last dim to simplify
-    rpn_match = rpn_match.squeeze(2)
+        # Squeeze last dim to simplify
+        rpn_match = rpn_match.squeeze(2)
 
-    # Get anchor classes. Convert the -1/+1 match to 0/1 values.
-    anchor_class = (rpn_match == 1).long()
+        # Get anchor classes. Convert the -1/+1 match to 0/1 values.
+        anchor_class = (rpn_match == 1).long()
 
-    # Positive and Negative anchors contribute to the loss,
-    # but neutral anchors (match value = 0) don't.
-    indices = torch.nonzero(rpn_match != 0)
+        # Positive and Negative anchors contribute to the loss,
+        # but neutral anchors (match value = 0) don't.
+        indices = torch.nonzero(rpn_match != 0)
 
-    # Pick rows that contribute to the loss and filter out the rest.
-    rpn_class_logits = rpn_class_logits[indices.data[:,0],indices.data[:,1],:]
-    anchor_class = anchor_class[indices.data[:,0],indices.data[:,1]]
+        # Pick rows that contribute to the loss and filter out the rest.
+        rpn_class_logits = rpn_class_logits[indices.data[:,0],indices.data[:,1],:]
+        anchor_class = anchor_class[indices.data[:,0],indices.data[:,1]]
 
-    # Crossentropy loss
-    loss = F.cross_entropy(rpn_class_logits, anchor_class)
+        # Crossentropy loss
+        loss = F.cross_entropy(rpn_class_logits, anchor_class)
 
-    return loss
+        return loss
 
 
     def forward(self, loc_preds, loc_targets, cls_preds, cls_targets):

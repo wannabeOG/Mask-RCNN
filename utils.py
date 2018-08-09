@@ -67,7 +67,15 @@ def compose_image_meta(image_id, image_shape, window, active_class_ids):
     )
     return meta
 
-
+def parse_image_meta(meta):
+    """Parses an image info Numpy array to its components.
+    See compose_image_meta() for more details.
+    """
+    image_id = meta[:, 0]
+    image_shape = meta[:, 1:4]
+    window = meta[:, 4:8]   # (y1, x1, y2, x2) window of image in in pixels
+    active_class_ids = meta[:, 8:]
+    return image_id, image_shape, window, active_class_ids
 
 
 def compute_iou(box, boxes, box_area, boxes_area):
@@ -476,7 +484,6 @@ def generate_pyramid_anchors(scales, ratios, feature_shapes, feature_strides,
         anchors.append(generate_anchors(scales[i], ratios, feature_shapes[i],
                                         feature_strides[i], anchor_stride))
     return np.concatenate(anchors, axis=0)
-
 
 
 

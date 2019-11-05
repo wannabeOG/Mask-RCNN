@@ -1,5 +1,22 @@
+## EDIT (AS OF 4th NOVEMBER 2019):
+
+1) This implementation has multiple errors and as of the date 4th, November 2019 is insufficient to be utilized as a resource to understanding the architecture of [Mask R-CNN][1]. It has been pointed out to me through multiple emails and comments on HackerNews that such a faulty implementation is to the detriment of the research endeavors in the deep learning community. It was a project that I had put together quite early in my academic career and I did not realize the scale of my mistake 
+
+2) I intend to take care of the issues (the issues filed in this repository are representative) and make this code more "readable" and embellish it with better documentation so that it fulfills the purpose for which it was made. Unfortunately, as of right now, I am busy with my academics and cannot attend to this project. I shall start working on bettering this repository by **mid-January to early February 2020**. Until then, I have provided links to other [implementations][2] of Mask R-CNN that I think could help serve your purpose
+
+3) PR's fixing any one of the issues listed are **always welcome** and will allow me to get a headstart on this particular task of making this repository more presentable.
+
+**Once again I would like to apologize for any inconvenience caused**
+
+## <a name="someid"></a> LINKS
+1) https://github.com/facebookresearch/detectron2 (PyTorch implementation)
+2) https://github.com/matterport/Mask_RCNN (Tensorflow implementation). Much of this repository was built using this repository as a reference
+---------------------------------------------------------------
+
 # Mask-RCNN
-A PyTorch implementation of the architecture of Mask RCNN, serves as an introduction to working with PyTorch
+A PyTorch implementation of the architecture of Mask RCNN
+
+
 
 ## Decription of folders 
 1) model.py includes the models of ResNet and FPN which were already implemented by the authors of the papers and reproduced in this       implementation
@@ -21,3 +38,5 @@ receptive field, which tends to either lose or assume "information" from the ima
 
 If you find any issue in this repsoritory, feel free to fork this repository and submit a PR with the necessary changes 
 
+[1]: https://arxiv.org/abs/1703.06870
+[2]: #someid
